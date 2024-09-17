@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { Image } from "../../pkg/foto";
+import { produce } from "immer";
 
 export interface StoreState {
   zoomRatio: number;
@@ -8,12 +9,14 @@ export interface StoreState {
   height: number;
 
   setZoomRatio: (zoomRatio: number) => void;
+  setImageSrc: (src: string) => void;
   setWidthHeight: (width: number, height: number) => void;
+  setImageBuffer: (image: HTMLImageElement) => void;
   imageUrl: string;
 
   imageObject: {
     getWASMImage: () => Image;
-    imageBuffer: Image | null;
+    imageBuffer: HTMLImageElement | null;
   };
 }
 
@@ -36,6 +39,18 @@ export const editorStore = create<StoreState>()(
       set((state) => {
         state.zoomRatio = zoomRatio;
       }),
+
+    setImageSrc: (src) =>
+      set((state) => {
+        state.imageUrl = src;
+      }),
+
+    setImageBuffer: (image) =>
+      set(
+        produce((state) => {
+          state.imageObject.imageBuffer = image;
+        }),
+      ),
 
     setWidthHeight: (width, height) =>
       set((state) => {

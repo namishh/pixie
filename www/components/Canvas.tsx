@@ -1,7 +1,21 @@
-export const Canvas = () => {
+export const Canvas = ({
+  LoadImage,
+}: {
+  LoadImage: (img: string | File) => void;
+}) => {
   return (
-    <div id="canvas-container">
-      <canvas className="bg-blue-400 w-screen h-screen" id="canvas"></canvas>
+    <div
+      id="canvas-container"
+      style={{ width: "100%", height: "100%", position: "relative" }}
+    >
+      <canvas
+        id="canvas"
+        style={{ position: "absolute" }}
+        className="w-full h-full"
+      ></canvas>
+      <div style={{ position: "absolute", top: 0, left: 0, color: "red" }}>
+        Canvas Component
+      </div>
     </div>
   );
 };
