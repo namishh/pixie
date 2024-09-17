@@ -29,7 +29,7 @@ export const Zoom = ({
           step={1}
         />
         <ZoomIn size={20} />
-        <p className="w-6">{zoomRatio.toFixed(2)}</p>
+        <p className="min-w-6">{Number(Number(zoomRatio) * 100).toFixed(0)}%</p>
       </div>
     </div>
   );

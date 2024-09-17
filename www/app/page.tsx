@@ -3,7 +3,7 @@
 import { useEditorStore, useImageStore } from "@/store/store";
 import { Canvas } from "@/components/Canvas";
 import { Zoom } from "@/components/Zoom";
-import { useEffect } from "react";
+import { SaveOpen } from "@/components/SaveOpen";
 
 export default function Home() {
   const { setImageSrc, zoomRatio, setZoomRatio, imageUrl } = useEditorStore();
@@ -129,8 +129,9 @@ export default function Home() {
   return (
     <div className="h-screen dark w-screen font-[family-name:var(--font-geist-sans)]">
       <div className="absolute inset-0 h-full w-full bg-neutral-950 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:36px_36px]"></div>
-      <Canvas LoadImage={LoadImage} ResizeCanvas={ResizeCanvas}/>
+      <Canvas LoadImage={LoadImage} ResizeCanvas={ResizeCanvas} />
       <Zoom ResizeCanvas={ResizeCanvas} />
+      <SaveOpen LoadImage={LoadImage} />
     </div>
   );
 }
