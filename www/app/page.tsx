@@ -1,16 +1,15 @@
 "use client";
 
-import { useEffect } from "react";
 import { greet } from "../../pkg/foto";
-import { editorStore } from "@/store/store";
+import { useEditorStore, useImageStore } from "@/store/store";
 import { Canvas } from "@/components/Canvas";
 
 export default function Home() {
-  const { setImageSrc, imageObject, zoomRatio, setZoomRatio, setImageBuffer } =
-    editorStore();
+  const { setImageSrc, zoomRatio, setZoomRatio } = useEditorStore();
+  const imageObject = useImageStore();
 
   function ResizeCanvas(autofit: Boolean) {
-    let wasmimage = imageObject.getWASMImage();
+    let wasmimage = imageObject.getWasmImg();
     let width = wasmimage.width();
     let height = wasmimage.height();
     let canvas = document.getElementById("canvas") as HTMLCanvasElement;
@@ -19,12 +18,15 @@ export default function Home() {
     ) as HTMLDivElement;
 
     let zoom = 1;
-
-    let paddedHeight = height * 0.9;
-    let paddedWidth = width * 0.9;
+    if (!autofit) {
+      zoom = zoomRatio;
+    }
 
     let containerWidth = container.offsetWidth;
     let containerHeight = container.offsetHeight;
+
+    let paddedHeight = containerWidth * 0.9;
+    let paddedWidth = containerHeight * 0.9;
 
     if (autofit) {
       if (paddedWidth >= width && paddedHeight >= height) {
@@ -38,23 +40,30 @@ export default function Home() {
       setZoomRatio(zoom);
     }
 
-    let newWidth = Math.round(width * zoomRatio);
-    let newHeight = Math.round(height * zoomRatio);
+    let newWidth = Math.round(width * zoom);
+    let newHeight = Math.round(height * zoom);
+
+    console.log(zoom);
+
+    console.log(canvas.width, canvas.height);
+    console.log(newWidth, newHeight);
+
     if (canvas.width !== newWidth || canvas.height !== newHeight) {
+      console.log("Resizing canvas: ", newWidth, newHeight);
       canvas.width = newWidth;
       canvas.height = newHeight;
       let ctx = canvas.getContext("2d");
       if (!ctx) {
         return;
       }
-      console.log(zoomRatio)
-      ctx.scale(zoomRatio, zoomRatio);
+      console.log(zoom);
+      ctx.scale(zoom, zoom);
     }
 
     let left = Math.round(Math.max(0, containerWidth - newWidth) / 2);
     let top = Math.round(Math.max(0, containerHeight - newHeight) / 2);
-    //    canvas.style.left = left + "px";
-    //    canvas.style.top = top + "px";
+    canvas.style.left = left + "px";
+    canvas.style.top = top + "px";
   }
 
   function DrawImage(img: HTMLImageElement) {
@@ -62,8 +71,8 @@ export default function Home() {
     const w = img.naturalWidth;
     const h = img.naturalHeight;
 
-    setImageBuffer(img);
-    let wasmimage = imageObject.getWASMImage();
+    imageObject.setImgBuff(img);
+    let wasmimage = imageObject.getWasmImg();
 
     let canvas = document.getElementById("canvas") as HTMLCanvasElement;
     if (!canvas || !canvas.getContext("2d")) {
@@ -121,10 +130,6 @@ export default function Home() {
     }
   }
 
-  useEffect(() => {
-    setZoomRatio(1);
-    LoadImage("/sample.jpg");
-  }, []);
   greet();
   return (
     <div className="h-screen w-screen font-[family-name:var(--font-geist-sans)]">
