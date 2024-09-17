@@ -11,5 +11,5 @@ extern "C" {
 
 #[wasm_bindgen]
 pub fn greet() {
-    log("Hello, foto!");
+    log("Hello, from the wasm!");
 }
