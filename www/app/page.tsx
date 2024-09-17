@@ -1,11 +1,12 @@
 "use client";
 
-import { greet } from "../../pkg/foto";
 import { useEditorStore, useImageStore } from "@/store/store";
 import { Canvas } from "@/components/Canvas";
+import { Zoom } from "@/components/Zoom";
+import { useEffect } from "react";
 
 export default function Home() {
-  const { setImageSrc, zoomRatio, setZoomRatio } = useEditorStore();
+  const { setImageSrc, zoomRatio, setZoomRatio, imageUrl } = useEditorStore();
   const imageObject = useImageStore();
 
   function ResizeCanvas(autofit: Boolean) {
@@ -30,7 +31,7 @@ export default function Home() {
 
     if (autofit) {
       if (paddedWidth >= width && paddedHeight >= height) {
-        zoom = 1.0;
+        zoom = 1;
       } else {
         zoom = Math.min(paddedWidth / width, paddedHeight / height);
       }
@@ -43,11 +44,6 @@ export default function Home() {
     let newWidth = Math.round(width * zoom);
     let newHeight = Math.round(height * zoom);
 
-    console.log(zoom);
-
-    console.log(canvas.width, canvas.height);
-    console.log(newWidth, newHeight);
-
     if (canvas.width !== newWidth || canvas.height !== newHeight) {
       console.log("Resizing canvas: ", newWidth, newHeight);
       canvas.width = newWidth;
@@ -56,7 +52,6 @@ export default function Home() {
       if (!ctx) {
         return;
       }
-      console.log(zoom);
       ctx.scale(zoom, zoom);
     }
 
@@ -78,10 +73,8 @@ export default function Home() {
     if (!canvas || !canvas.getContext("2d")) {
       return;
     }
-    setTimeout(() => {
-      console.log("Drawing image on main canvas");
-      canvas.getContext("2d")!.drawImage(img, 0, 0);
-    }, 0);
+
+    canvas.getContext("2d")!.drawImage(img, 0, 0);
 
     console.log("Creating temporary canvas");
     let tmpCanvas = document.createElement("canvas");
@@ -100,7 +93,10 @@ export default function Home() {
     ResizeCanvas(true);
   }
 
-  function LoadImage(src: string | File) {
+  function LoadImage(src: string | File | null) {
+    if (!src) {
+      src = imageUrl;
+    }
     let srcType: "url" | "file" = "url";
 
     if (src instanceof File) {
@@ -130,10 +126,11 @@ export default function Home() {
     }
   }
 
-  greet();
   return (
-    <div className="h-screen w-screen font-[family-name:var(--font-geist-sans)]">
-      <Canvas LoadImage={LoadImage} />
+    <div className="h-screen dark w-screen font-[family-name:var(--font-geist-sans)]">
+      <div className="absolute inset-0 h-full w-full bg-neutral-950 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:36px_36px]"></div>
+      <Canvas LoadImage={LoadImage} ResizeCanvas={ResizeCanvas}/>
+      <Zoom ResizeCanvas={ResizeCanvas} />
     </div>
   );
 }

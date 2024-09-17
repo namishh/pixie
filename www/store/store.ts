@@ -11,17 +11,17 @@ export interface StoreState {
   setZoomRatio: (zoomRatio: number) => void;
   setImageSrc: (src: string) => void;
   setWidthHeight: (width: number, height: number) => void;
+
   imageUrl: string;
 }
 
 export const useEditorStore = create<StoreState>()(
-  immer((set) => ({
+  immer((set, get) => ({
     zoomRatio: 1,
     width: 0,
     height: 0,
 
     imageUrl: "/sample.jpg",
-
     setZoomRatio: (zoomRatio) =>
       set((state) => {
         state.zoomRatio = zoomRatio;
@@ -70,9 +70,9 @@ export const useImageStore = create<ImageStore>()(
 
     // Set the image buffer
     setImgBuff: (buffer) => {
-      produce((state) => {
+      set(produce((state) => {
         state.imgBuff = buffer;
-      });
+      }));
     },
   })),
 );
