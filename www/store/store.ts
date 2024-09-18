@@ -42,7 +42,7 @@ export const useEditorStore = create<StoreState>()(
 
 interface ImageStore {
   img: Image | null; // Store the image object
-  imgBuff: HTMLImageElement | null; // Buffer for frequent access to image data
+  imgBuff: HTMLImageElement | ImageBitmap | null; // Buffer for frequent access to image data
   createImgObj: () => void; // Action to initialize the image object
   getWasmImg: () => Image; // Function to get the WASM image, initialize if needed
   setImgBuff: (buffer: HTMLImageElement) => void; // Action to set the image buffer
@@ -70,9 +70,11 @@ export const useImageStore = create<ImageStore>()(
 
     // Set the image buffer
     setImgBuff: (buffer) => {
-      set(produce((state) => {
-        state.imgBuff = buffer;
-      }));
+      set(
+        produce((state) => {
+          state.imgBuff = buffer;
+        }),
+      );
     },
   })),
 );

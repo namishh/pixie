@@ -1,4 +1,4 @@
-![currently](https://i.imgur.com/ayvsW7b.png)
+![currently](https://i.imgur.com/rl4Gh6S.png)
 <samp>
 // pixie: wasm image editor
 </samp>

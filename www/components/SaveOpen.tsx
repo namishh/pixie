@@ -1,5 +1,5 @@
 import { useEditorStore, useImageStore } from "@/store/store";
-import { SaveIcon, FolderOpen } from "lucide-react";
+import { SaveIcon, FolderOpen, Redo } from "lucide-react";
 import { get_wasm_memory } from "../../pkg/foto";
 
 export const SaveOpen = ({
@@ -56,6 +56,9 @@ export const SaveOpen = ({
 
   return (
     <div className="top-4 fixed right-4 flex gap-4">
+      <button className="flex gap-4 items-center p-2 bg-neutral-900 rounded-md border-[1px] border-neutral-700">
+        <Redo onClick={() => LoadImage(null)} size={20} />
+      </button>
       <button className="flex gap-4 items-center p-2 bg-neutral-900 rounded-md border-[1px] border-neutral-700">
         <SaveIcon onClick={saveImage} size={20} />
       </button>

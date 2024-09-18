@@ -9,6 +9,7 @@ use wasm_bindgen::prelude::*;
 pub enum Action {
     None,
     Adjust,
+    Flip,
     Rotate,
     Pixelate,
     Blur,
