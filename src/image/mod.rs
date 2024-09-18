@@ -1,6 +1,7 @@
 extern crate console_error_panic_hook;
 extern crate wasm_bindgen;
 
+mod filters;
 mod transform;
 
 use wasm_bindgen::prelude::*;
