@@ -34,7 +34,7 @@ export const Rotate = ({
     Redraw(false);
   };
   return (
-    <div className="flex w-36 flex-col gap-2 p-3 bg-neutral-900 rounded-md border-[1px] border-neutral-700">
+    <div className="flex w-36 absolute top-0 left-0 flex-col gap-2 p-3 bg-neutral-900 rounded-md border-[1px] border-neutral-700">
       <p className="text-sm">Rotate</p>
       <div className="flex gap-4">
         <RotateCw onClick={rotatecw} className="cursor-pointer" size={18} />

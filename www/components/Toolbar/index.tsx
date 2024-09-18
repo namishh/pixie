@@ -4,6 +4,7 @@ import { useEditorStore, useImageStore } from "@/store/store";
 import { get_wasm_memory } from "../../../pkg/foto";
 
 import { Rotate } from "./Rotate";
+import { Scale } from "./Scale";
 
 import { useState } from "react";
 
@@ -15,6 +16,7 @@ export const Toolbar = ({
   const { zoomRatio } = useEditorStore();
   const { imgBuff, getWasmImg, setImgBuff } = useImageStore();
   const [openRotate, setOpenRotate] = useState(false);
+  const [openScale, setOpenScale] = useState(false);
   
   const Redraw = (reposition: Boolean) => {
     let wasmimage = getWasmImg();
@@ -52,11 +54,12 @@ export const Toolbar = ({
           <RotateCcw onClick={() => setOpenRotate(!openRotate)} className="cursor-pointer" size={20} />
           <CropIcon className="cursor-pointer" size={20} />
           <Scaling className="cursor-pointer" size={20} />
-          <ArrowDownRight className="cursor-pointer" size={22} />
+          <ArrowDownRight onClick={() => setOpenScale(!openScale)} className="cursor-pointer" size={22} />
         </div>
       </div>
       <div className="top-4 left-20 fixed">
         {openRotate && <Rotate Redraw={Redraw} />}
+          {openScale && <Scale Redraw={Redraw} />}
       </div>
     </>
   );

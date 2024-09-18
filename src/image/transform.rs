@@ -162,28 +162,29 @@ impl Image {
         }
     }
 
+    // thanks genai but you suck
     pub fn scale(&mut self, factor: f64) {
-        if factor == 1.0 {
+        if (factor - 1.0).abs() < f64::EPSILON {
             self.pixels = self.pixels_bk.clone();
             self.width = self.width_bk;
             self.height = self.height_bk;
             return;
         }
-
-        let new_width = (self.width_bk as f64 * factor).floor() as u32;
-        let new_height = (self.height_bk as f64 * factor).floor() as u32;
-
-        let mut new_pixels: Vec<u8> = Vec::with_capacity((new_width * new_height * 4) as usize);
-        let mut pixel_buf: Vec<u8> = Vec::with_capacity(4);
+    
+        let new_width = (self.width_bk as f64 * factor).round() as u32;
+        let new_height = (self.height_bk as f64 * factor).round() as u32;
+    
+        let mut new_pixels = vec![0u8; (new_width * new_height * 4) as usize];
         
-        for row in 0..new_height {
-            for col in 0..new_width {
-                self.bilinear_interpolate(
-                    (col as f64 / factor) * 0.999999,
-                    (row as f64 / factor) * 0.999999,
-                    &mut pixel_buf,
-                );
-                new_pixels.extend_from_slice(&pixel_buf);
+        for new_y in 0..new_height {
+            for new_x in 0..new_width {
+                let old_x = (new_x as f64 / factor).floor() as u32;
+                let old_y = (new_y as f64 / factor).floor() as u32;
+                
+                let old_index = ((old_y * self.width_bk + old_x) * 4) as usize;
+                let new_index = ((new_y * new_width + new_x) * 4) as usize;
+                
+                new_pixels[new_index..new_index + 4].copy_from_slice(&self.pixels_bk[old_index..old_index + 4]);
             }
         }
         

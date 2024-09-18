@@ -7,7 +7,9 @@ export interface StoreState {
   zoomRatio: number;
   width: number;
   height: number;
+  factor: number;
 
+  setFactor: (factor: number) => void;
   setZoomRatio: (zoomRatio: number) => void;
   setImageSrc: (src: string) => void;
   setWidthHeight: (width: number, height: number) => void;
@@ -20,11 +22,17 @@ export const useEditorStore = create<StoreState>()(
     zoomRatio: 1,
     width: 0,
     height: 0,
+    factor: 100,
 
     imageUrl: "/sample.jpg",
     setZoomRatio: (zoomRatio) =>
       set((state) => {
         state.zoomRatio = zoomRatio;
+      }),
+
+    setFactor: (factor) =>
+      set((state) => {
+        state.factor = factor;
       }),
 
     setImageSrc: (src) =>
@@ -45,7 +53,7 @@ interface ImageStore {
   imgBuff: HTMLImageElement | ImageBitmap | null; // Buffer for frequent access to image data
   createImgObj: () => void; // Action to initialize the image object
   getWasmImg: () => Image; // Function to get the WASM image, initialize if needed
-  setImgBuff: (buffer: HTMLImageElement) => void; // Action to set the image buffer
+  setImgBuff: (buffer: HTMLImageElement | ImageBitmap) => void; // Action to set the image buffer
 }
 
 export const useImageStore = create<ImageStore>()(
