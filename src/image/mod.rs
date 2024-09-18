@@ -10,8 +10,10 @@ pub enum Action {
     None,
     Adjust,
     Flip,
+    Crop,
     Rotate,
     Pixelate,
+    Scale,
     Blur,
 }
 
