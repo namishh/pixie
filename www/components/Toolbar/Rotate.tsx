@@ -16,22 +16,22 @@ export const Rotate = ({
   const rotatecw = () => {
     const image = getWasmImg();
     image.rotate(true);
-    Redraw(false);
+    Redraw(true);
   };
   const rotateccw = () => {
     const image = getWasmImg();
     image.rotate(false);
-    Redraw(false);
+    Redraw(true);
   };
   const flipv = () => {
     const image = getWasmImg();
     image.flip_v();
-    Redraw(false);
+    Redraw(true);
   };
   const fliph = () => {
     const image = getWasmImg();
     image.flip_h();
-    Redraw(false);
+    Redraw(true);
   };
   return (
     <div className="flex w-36 absolute top-0 left-0 flex-col gap-2 p-3 bg-neutral-900 rounded-md border-[1px] border-neutral-700">

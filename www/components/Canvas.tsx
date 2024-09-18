@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useEditorStore, useImageStore } from "@/store/store";
+import CropHandlers from "@/components/CropHandler";
 export const Canvas = ({
   LoadImage,
   ResizeCanvas,
@@ -8,7 +9,7 @@ export const Canvas = ({
   ResizeCanvas: (autofit: boolean) => void;
 }) => {
   const { zoomRatio } = useEditorStore();
-  const {imgBuff} = useImageStore();
+  const { imgBuff } = useImageStore();
 
   useEffect(() => {
     console.log("Redrawing Canvas");
@@ -30,6 +31,7 @@ export const Canvas = ({
       style={{ width: "100%", height: "100%", position: "relative" }}
     >
       <canvas id="canvas" style={{ position: "absolute" }}></canvas>
+      <CropHandlers />
     </div>
   );
 };

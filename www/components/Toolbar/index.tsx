@@ -17,7 +17,7 @@ export const Toolbar = ({
   const { imgBuff, getWasmImg, setImgBuff } = useImageStore();
   const [openRotate, setOpenRotate] = useState(false);
   const [openScale, setOpenScale] = useState(false);
-  
+
   const Redraw = (reposition: Boolean) => {
     let wasmimage = getWasmImg();
     let w = wasmimage.width();
@@ -51,15 +51,22 @@ export const Toolbar = ({
     <>
       <div className="fixed top-4 left-4 flex flex-col gap-4">
         <div className="flex flex-col gap-4 p-3 bg-neutral-900 rounded-md border-[1px] border-neutral-700">
-          <RotateCcw onClick={() => setOpenRotate(!openRotate)} className="cursor-pointer" size={20} />
+          <RotateCcw
+            onClick={() => setOpenRotate(!openRotate)}
+            className="cursor-pointer"
+            size={20}
+          />
           <CropIcon className="cursor-pointer" size={20} />
-          <Scaling className="cursor-pointer" size={20} />
-          <ArrowDownRight onClick={() => setOpenScale(!openScale)} className="cursor-pointer" size={22} />
+          <Scaling
+            onClick={() => setOpenScale(!openScale)}
+            className="cursor-pointer"
+            size={22}
+          />
         </div>
       </div>
       <div className="top-4 left-20 fixed">
         {openRotate && <Rotate Redraw={Redraw} />}
-          {openScale && <Scale Redraw={Redraw} />}
+        {openScale && <Scale Redraw={Redraw} />}
       </div>
     </>
   );
