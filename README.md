@@ -20,8 +20,8 @@ This is my very first project using web assembly. This is simple image manipulat
 - Shadcn for the UI components
 
 // Features planned to support
-- Loading and saving images
-- Resize, Rotate, and Scaling
+- Loading and saving images (done)
+- Resize, Rotate, and Scaling (done)
 - Cropping Images
 - Adding Texts and Shapes
 - Controlling hue, saturation, contrast and brightness
