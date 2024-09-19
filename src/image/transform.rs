@@ -6,32 +6,46 @@ use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 impl Image {
-    pub fn rotate(&mut self, clockwise: bool) {
-        let (w, h) = (self.width as usize, self.height as usize);
+    pub fn degrees_rotate(&mut self, degrees: f64) {
+        let rads = degrees * std::f64::consts::PI / 180.0;
+        let (w, h) = (self.width as f64, self.height as f64);
 
-        let mut new_pixels = vec![0_u8; w * h * 4];
-        let mut new_x;
-        let mut new_y;
-        let mut new_idx: usize;
-        let mut current_idx: usize;
+        let (sin, cos) = (rads.sin().abs(), rads.cos().abs());
+        let (new_w, new_h) = (
+            (h * sin + w * cos).ceil() as u32,
+            (h * cos + w * sin).ceil() as u32,
+        );
 
-        for row in 0..h {
-            for col in 0..w {
-                new_x = if clockwise { h - 1 - row } else { row };
-                new_y = if clockwise { col } else { w - 1 - col };
-                new_idx = new_y * h + new_x;
-                current_idx = row * w + col;
+        let (old_center_x, old_center_y) = (w / 2.0, h / 2.0);
+        let (new_center_x, new_center_y) = (new_w as f64 / 2.0, new_h as f64 / 2.0);
 
-                new_pixels[new_idx * 4 + 0] = self.pixels[current_idx * 4 + 0];
-                new_pixels[new_idx * 4 + 1] = self.pixels[current_idx * 4 + 1];
-                new_pixels[new_idx * 4 + 2] = self.pixels[current_idx * 4 + 2];
-                new_pixels[new_idx * 4 + 3] = self.pixels[current_idx * 4 + 3];
+        let mut new_pixels = vec![0u8; (new_w * new_h * 4) as usize];
+
+        for y in 0..new_h {
+            for x in 0..new_w {
+                let dx = x as f64 - new_center_x;
+                let dy = y as f64 - new_center_y;
+
+                let src_x = (dx * rads.cos() + dy * rads.sin() + old_center_x).round();
+                let src_y = (-dx * rads.sin() + dy * rads.cos() + old_center_y).round();
+
+                let dst_idx = ((y * new_w + x) * 4) as usize;
+
+                if src_x >= 0.0 && src_x < w && src_y >= 0.0 && src_y < h {
+                    let src_idx = ((src_y as u32 * self.width + src_x as u32) * 4) as usize;
+                    new_pixels[dst_idx..dst_idx + 4]
+                        .copy_from_slice(&self.pixels[src_idx..src_idx + 4]);
+                } else {
+                    new_pixels[dst_idx..dst_idx + 4].copy_from_slice(&[0, 0, 0, 0]);
+                }
             }
         }
+
+        self.width = new_w;
+        self.height = new_h;
+
         self.pixels = new_pixels;
-        self.width = h as u32;
-        self.height = w as u32;
-        self.last_action = Action::Rotate
+        self.last_action = Action::Rotate;
     }
 
     // iterating through half of the rows, swapping pixels between the top and bottom rows.
@@ -170,24 +184,25 @@ impl Image {
             self.height = self.height_bk;
             return;
         }
-    
+
         let new_width = (self.width_bk as f64 * factor).round() as u32;
         let new_height = (self.height_bk as f64 * factor).round() as u32;
-    
+
         let mut new_pixels = vec![0u8; (new_width * new_height * 4) as usize];
-        
+
         for new_y in 0..new_height {
             for new_x in 0..new_width {
                 let old_x = (new_x as f64 / factor).floor() as u32;
                 let old_y = (new_y as f64 / factor).floor() as u32;
-                
+
                 let old_index = ((old_y * self.width_bk + old_x) * 4) as usize;
                 let new_index = ((new_y * new_width + new_x) * 4) as usize;
-                
-                new_pixels[new_index..new_index + 4].copy_from_slice(&self.pixels_bk[old_index..old_index + 4]);
+
+                new_pixels[new_index..new_index + 4]
+                    .copy_from_slice(&self.pixels_bk[old_index..old_index + 4]);
             }
         }
-        
+
         self.pixels = new_pixels;
         self.width = new_width;
         self.height = new_height;
