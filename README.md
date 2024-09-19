@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://i.imgur.com/VeFl4v3.png">
+<img src="https://i.imgur.com/6CpzyxK.png">
 
 <samp>
 // pixie: wasm image editor

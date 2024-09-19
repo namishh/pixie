@@ -13,40 +13,54 @@ impl Image {
         let rads = degrees * std::f64::consts::PI / 180.0;
         let (w, h) = (self.width_orig as f64, self.height_orig as f64);
 
-        let (sin, cos) = (rads.sin().abs(), rads.cos().abs());
+        // Precompute sin and cos of the radians only once
+        let (sin_rads, cos_rads) = (rads.sin(), rads.cos());
+        let (abs_sin, abs_cos) = (sin_rads.abs(), cos_rads.abs());
+
+        // Calculate the new image width and height
         let (new_w, new_h) = (
-            (h * sin + w * cos).ceil() as u32,
-            (h * cos + w * sin).ceil() as u32,
+            (h * abs_sin + w * abs_cos).ceil() as u32,
+            (h * abs_cos + w * abs_sin).ceil() as u32,
         );
 
+        // Calculate the old and new center points
         let (old_center_x, old_center_y) = (w / 2.0, h / 2.0);
         let (new_center_x, new_center_y) = (new_w as f64 / 2.0, new_h as f64 / 2.0);
 
+        // Allocate the new pixel buffer
         let mut new_pixels = vec![0u8; (new_w * new_h * 4) as usize];
 
-        for y in 0..new_h {
-            for x in 0..new_w {
-                let dx = x as f64 - new_center_x;
+        // Use unsafe block to avoid bounds checking inside the loop
+        unsafe {
+            for y in 0..new_h {
                 let dy = y as f64 - new_center_y;
+                for x in 0..new_w {
+                    let dx = x as f64 - new_center_x;
 
-                let src_x = (dx * rads.cos() + dy * rads.sin() + old_center_x).round();
-                let src_y = (-dx * rads.sin() + dy * rads.cos() + old_center_y).round();
+                    // Precompute rotated source coordinates
+                    let src_x = (dx * cos_rads + dy * sin_rads + old_center_x).round();
+                    let src_y = (-dx * sin_rads + dy * cos_rads + old_center_y).round();
 
-                let dst_idx = ((y * new_w + x) * 4) as usize;
+                    let dst_idx = ((y * new_w + x) * 4) as usize;
 
-                if src_x >= 0.0 && src_x < w && src_y >= 0.0 && src_y < h {
-                    let src_idx = ((src_y as u32 * self.width_orig + src_x as u32) * 4) as usize;
-                    new_pixels[dst_idx..dst_idx + 4]
-                        .copy_from_slice(&self.pixels_orig[src_idx..src_idx + 4]);
-                } else {
-                    new_pixels[dst_idx..dst_idx + 4].copy_from_slice(&[0, 0, 0, 0]);
+                    if src_x >= 0.0 && src_x < w && src_y >= 0.0 && src_y < h {
+                        let src_idx =
+                            ((src_y as u32 * self.width_orig + src_x as u32) * 4) as usize;
+                        std::ptr::copy_nonoverlapping(
+                            self.pixels_orig.as_ptr().add(src_idx),
+                            new_pixels.as_mut_ptr().add(dst_idx),
+                            4,
+                        );
+                    } else {
+                        std::ptr::write_bytes(new_pixels.as_mut_ptr().add(dst_idx), 0, 4);
+                    }
                 }
             }
         }
 
+        // Update the width, height, and pixels of the image
         self.width = new_w;
         self.height = new_h;
-
         self.pixels = new_pixels;
         self.last_action = Action::Rotate;
     }

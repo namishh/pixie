@@ -14,8 +14,10 @@ export const Rotate = ({
   Redraw: (reposition: Boolean) => void;
 }) => {
   const { getWasmImg, rotationAngle, setRotationAngle } = useImageStore();
+  
+  const image = getWasmImg();
+  
   const rotatecw = () => {
-    const image = getWasmImg();
     image.perpendicular_rotate(true);
     if (rotationAngle === 90) {
       setRotationAngle(180);
@@ -29,8 +31,9 @@ export const Rotate = ({
     image.apply_change();
     Redraw(true);
   };
+  
+  
   const rotateccw = () => {
-    const image = getWasmImg();
     image.perpendicular_rotate(false);
     if (rotationAngle === 90) {
       setRotationAngle(0);
@@ -45,13 +48,11 @@ export const Rotate = ({
     Redraw(true);
   };
   const flipv = () => {
-    const image = getWasmImg();
     image.flip_v();
     image.apply_change();
     Redraw(true);
   };
   const fliph = () => {
-    const image = getWasmImg();
     image.flip_h();
     image.apply_change();
     Redraw(true);
@@ -68,11 +69,12 @@ export const Rotate = ({
 
       <p className="text-sm">Angle</p>
       <Slider
+        onValueCommit={() => {
+          image.apply_change();
+        }}
         onValueChange={(i) => {
           setRotationAngle(i[0]);
-          const image = getWasmImg();
           image.degrees_rotate(i[0]);
-          image.apply_change();
           Redraw(false);
         }}
         min={0}

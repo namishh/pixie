@@ -31,7 +31,7 @@ export const Canvas = ({
     >
       <canvas
         id="canvas"
-        className="border-2"
+        className=""
         style={{ position: "absolute" }}
       ></canvas>
     </div>
