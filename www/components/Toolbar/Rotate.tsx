@@ -6,31 +6,38 @@ import {
 } from "lucide-react";
 
 import { useImageStore } from "@/store/store";
+import { Slider } from "../ui/slider";
 
 export const Rotate = ({
   Redraw,
 }: {
   Redraw: (reposition: Boolean) => void;
 }) => {
-  const { getWasmImg } = useImageStore();
+  const { getWasmImg, rotationAngle, setRotationAngle } = useImageStore();
   const rotatecw = () => {
     const image = getWasmImg();
-    image.rotate(true);
+    image.degrees_rotate(90);
+    setRotationAngle(90);
+    image.apply_change();
     Redraw(true);
   };
   const rotateccw = () => {
     const image = getWasmImg();
-    image.rotate(false);
+    image.degrees_rotate(-90);
+    setRotationAngle(-90);
+    image.apply_change();
     Redraw(true);
   };
   const flipv = () => {
     const image = getWasmImg();
     image.flip_v();
+    image.apply_change();
     Redraw(true);
   };
   const fliph = () => {
     const image = getWasmImg();
     image.flip_h();
+    image.apply_change();
     Redraw(true);
   };
   return (
@@ -42,6 +49,23 @@ export const Rotate = ({
         <FlipHorizontal onClick={fliph} className="cursor-pointer" size={18} />
         <FlipVertical onClick={flipv} className="cursor-pointer" size={18} />
       </div>
+
+      <p className="text-sm">Angle</p>
+      <Slider
+        onValueChange={(i) => {
+          setRotationAngle(i[0]);
+          const image = getWasmImg();
+          image.degrees_rotate(i[0]);
+          image.apply_change();
+          Redraw(true);
+        }}
+        min={0}
+        className="w-full"
+        defaultValue={[rotationAngle]}
+        value={[rotationAngle]}
+        max={360}
+        step={1}
+      />
     </div>
   );
 };

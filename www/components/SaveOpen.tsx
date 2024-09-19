@@ -57,7 +57,13 @@ export const SaveOpen = ({
   return (
     <div className="top-4 fixed right-4 flex gap-4">
       <button className="flex gap-4 items-center p-2 bg-neutral-900 rounded-md border-[1px] border-neutral-700">
-        <Redo onClick={() => LoadImage(null)} size={20} />
+        <Redo
+          onClick={() => {
+            imageObject.setRotationAngle(0);
+            LoadImage(null);
+          }}
+          size={20}
+        />
       </button>
       <button className="flex gap-4 items-center p-2 bg-neutral-900 rounded-md border-[1px] border-neutral-700">
         <SaveIcon onClick={saveImage} size={20} />

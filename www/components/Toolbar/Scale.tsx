@@ -1,5 +1,6 @@
 import { useImageStore, useEditorStore } from "@/store/store";
 import { Slider } from "../ui/slider";
+import { Button } from "../ui/button";
 
 export const Scale = ({
   Redraw,
@@ -19,7 +20,7 @@ export const Scale = ({
           image.scale(i[0] / 100);
           Redraw(false);
         }}
-        min={10}
+        min={50}
         className="w-48"
         defaultValue={[factor]}
         value={[factor]}
@@ -47,6 +48,16 @@ export const Scale = ({
           {factor} %
         </div>
       </div>
+      <Button
+        onClick={() => {
+          const image = getWasmImg();
+          image.apply_change();
+          setFactor(100);
+        }}
+        className="mt-2"
+      >
+        Apply
+      </Button>
     </div>
   );
 };

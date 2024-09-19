@@ -29,7 +29,11 @@ export const Canvas = ({
       id="canvas-container"
       style={{ width: "100%", height: "100%", position: "relative" }}
     >
-      <canvas id="canvas" style={{ position: "absolute" }}></canvas>
+      <canvas
+        id="canvas"
+        className="border-2"
+        style={{ position: "absolute" }}
+      ></canvas>
     </div>
   );
 };

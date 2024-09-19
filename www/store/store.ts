@@ -53,6 +53,8 @@ interface ImageStore {
   imgBuff: HTMLImageElement | ImageBitmap | null; // Buffer for frequent access to image data
   createImgObj: () => void; // Action to initialize the image object
   getWasmImg: () => Image; // Function to get the WASM image, initialize if needed
+  rotationAngle: number;
+  setRotationAngle: (deg: number) => void;
   setImgBuff: (buffer: HTMLImageElement | ImageBitmap) => void; // Action to set the image buffer
 }
 
@@ -61,12 +63,18 @@ export const useImageStore = create<ImageStore>()(
     img: null,
     imgBuff: null,
 
+    rotationAngle: 0,
     createImgObj: () => {
       const newImg = Image.new(0, 0, new Uint8Array(2));
       set((state) => {
         state.img = newImg;
       });
     },
+
+    setRotationAngle: (deg) =>
+      set((state) => {
+        state.rotationAngle = deg;
+      }),
 
     getWasmImg: () => {
       const { img, createImgObj } = get();
