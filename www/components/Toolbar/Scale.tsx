@@ -52,6 +52,7 @@ export const Scale = ({
         onClick={() => {
           const image = getWasmImg();
           image.apply_change();
+          image.update_orig();
           setFactor(100);
         }}
         className="mt-2"
