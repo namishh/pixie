@@ -1,4 +1,7 @@
 extern crate wasm_bindgen;
+use crate::greet;
+use crate::log;
+
 use super::Action;
 use super::Image;
 use std::cmp;
@@ -8,7 +11,7 @@ use wasm_bindgen::prelude::*;
 impl Image {
     pub fn degrees_rotate(&mut self, degrees: f64) {
         let rads = degrees * std::f64::consts::PI / 180.0;
-        let (w, h) = (self.width as f64, self.height as f64);
+        let (w, h) = (self.width_orig as f64, self.height_orig as f64);
 
         let (sin, cos) = (rads.sin().abs(), rads.cos().abs());
         let (new_w, new_h) = (
@@ -32,9 +35,9 @@ impl Image {
                 let dst_idx = ((y * new_w + x) * 4) as usize;
 
                 if src_x >= 0.0 && src_x < w && src_y >= 0.0 && src_y < h {
-                    let src_idx = ((src_y as u32 * self.width + src_x as u32) * 4) as usize;
+                    let src_idx = ((src_y as u32 * self.width_orig + src_x as u32) * 4) as usize;
                     new_pixels[dst_idx..dst_idx + 4]
-                        .copy_from_slice(&self.pixels[src_idx..src_idx + 4]);
+                        .copy_from_slice(&self.pixels_orig[src_idx..src_idx + 4]);
                 } else {
                     new_pixels[dst_idx..dst_idx + 4].copy_from_slice(&[0, 0, 0, 0]);
                 }
@@ -46,6 +49,34 @@ impl Image {
 
         self.pixels = new_pixels;
         self.last_action = Action::Rotate;
+    }
+
+    pub fn perpendicular_rotate(&mut self, clockwise: bool) {
+        let (w, h) = (self.width as usize, self.height as usize);
+
+        let mut new_pixels = vec![0_u8; w * h * 4];
+        let mut new_x;
+        let mut new_y;
+        let mut new_idx: usize;
+        let mut current_idx: usize;
+
+        for row in 0..h {
+            for col in 0..w {
+                new_x = if clockwise { h - 1 - row } else { row };
+                new_y = if clockwise { col } else { w - 1 - col };
+                new_idx = new_y * h + new_x;
+                current_idx = row * w + col;
+
+                new_pixels[new_idx * 4 + 0] = self.pixels[current_idx * 4 + 0];
+                new_pixels[new_idx * 4 + 1] = self.pixels[current_idx * 4 + 1];
+                new_pixels[new_idx * 4 + 2] = self.pixels[current_idx * 4 + 2];
+                new_pixels[new_idx * 4 + 3] = self.pixels[current_idx * 4 + 3];
+            }
+        }
+        self.pixels = new_pixels;
+        self.width = h as u32;
+        self.height = w as u32;
+        self.last_action = Action::Rotate
     }
 
     // iterating through half of the rows, swapping pixels between the top and bottom rows.

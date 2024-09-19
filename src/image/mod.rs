@@ -31,6 +31,10 @@ pub struct Image {
     last_action: Action,
     hsi: Vec<Vec<f64>>,
     lab: Vec<f64>,
+
+    pixels_orig: Vec<u8>,
+    width_orig: u32,
+    height_orig: u32,
 }
 
 #[wasm_bindgen]
@@ -41,9 +45,13 @@ impl Image {
             height: h,
             pixels: buf.clone(),
 
-            pixels_bk: buf,
+            pixels_bk: buf.clone(),
             width_bk: w,
             height_bk: h,
+
+            pixels_orig: buf.clone(),
+            width_orig: w,
+            height_orig: h,
 
             last_action: Action::None,
 
@@ -60,6 +68,12 @@ impl Image {
         self.pixels_bk = buf;
         self.width_bk = w;
         self.height_bk = h;
+    }
+
+    pub fn set(&mut self, w: u32, h: u32, buf: Vec<u8>) {
+        self.width_orig = w;
+        self.height_orig = h;
+        self.pixels_orig = buf;
     }
 
     pub fn pixels(&self) -> *const u8 {
