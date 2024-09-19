@@ -16,15 +16,31 @@ export const Rotate = ({
   const { getWasmImg, rotationAngle, setRotationAngle } = useImageStore();
   const rotatecw = () => {
     const image = getWasmImg();
-    image.degrees_rotate(90);
-    setRotationAngle(90);
+    image.perpendicular_rotate(true);
+    if (rotationAngle === 90) {
+      setRotationAngle(180);
+    } else if (rotationAngle === 180) {
+      setRotationAngle(270);
+    } else if (rotationAngle === 270) {
+      setRotationAngle(0);
+    } else {
+      setRotationAngle(90);
+    }
     image.apply_change();
     Redraw(true);
   };
   const rotateccw = () => {
     const image = getWasmImg();
-    image.degrees_rotate(-90);
-    setRotationAngle(-90);
+    image.perpendicular_rotate(false);
+    if (rotationAngle === 90) {
+      setRotationAngle(0);
+    } else if (rotationAngle === 180) {
+      setRotationAngle(90);
+    } else if (rotationAngle === 270) {
+      setRotationAngle(180);
+    } else {
+      setRotationAngle(270);
+    }
     image.apply_change();
     Redraw(true);
   };
@@ -57,7 +73,7 @@ export const Rotate = ({
           const image = getWasmImg();
           image.degrees_rotate(i[0]);
           image.apply_change();
-          Redraw(true);
+          Redraw(false);
         }}
         min={0}
         className="w-full"

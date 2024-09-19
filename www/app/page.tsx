@@ -91,6 +91,8 @@ export default function Home() {
     let imgData = tmpCtx.getImageData(0, 0, w, h);
 
     wasmimage.reuse(w, h, imgData.data as unknown as Uint8Array);
+    
+    wasmimage.set(w, h, imgData.data as unknown as Uint8Array);
     ResizeCanvas(true);
   }
 

@@ -13,6 +13,7 @@ export const SaveOpen = ({
     if (evt.target.files && evt.target.files.length > 0) {
       let file = evt.target.files[0];
       LoadImage(file);
+      imageObject.setRotationAngle(0);
     }
   };
 
