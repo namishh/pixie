@@ -76,6 +76,12 @@ impl Image {
         self.pixels_orig = buf;
     }
 
+    pub fn update_orig(&mut self) {
+        self.pixels_orig = self.pixels.clone();
+        self.width_orig = self.width;
+        self.height_orig = self.height;
+    }
+
     pub fn pixels(&self) -> *const u8 {
         self.pixels.as_ptr()
     }
