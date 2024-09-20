@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useEditorStore, useImageStore } from "@/store/store";
 import { get_wasm_memory } from "../../pkg/foto";
+import { Button } from "./ui/button";
 interface Box {
   x: number;
   y: number;
@@ -221,11 +222,11 @@ export const CropHandlers = ({
     <div
       ref={containerRef}
       style={{ width, height }}
-      className={`absolute border-2 border-blue-300 container-to-follow`}
+      className={`absolute border-[4px] border-white container-to-follow`}
     >
       <div
         ref={boxRef}
-        className="absolute bg-blue-200/40 cursor-move"
+        className="absolute bg-neutral-900/40 cursor-move"
         style={{
           left: `${box.x}px`,
           top: `${box.y}px`,
@@ -235,17 +236,12 @@ export const CropHandlers = ({
         onMouseDown={handleMouseDown}
       >
         <div className="absolute inset-0 flex items-center justify-center">
-          <button
-            onClick={handleButtonClick}
-            className="bg-blue-500 text-white px-4 py-2 rounded"
-          >
-            Crop
-          </button>
+          <Button onClick={handleButtonClick}>Crop</Button>
         </div>
         {resizeHandles.map((handle, index) => (
           <div
             key={index}
-            className={`absolute ${handle.position} bg-blue-400`}
+            className={`absolute ${handle.position} bg-white`}
             onMouseDown={(e) => handleResizeMouseDown(e, handle.handle)}
           />
         ))}

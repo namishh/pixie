@@ -30,7 +30,7 @@ All of the photo manipulation is done **without any external libraries** in rust
 // Features planned to support
 - Loading and saving images (done)
 - Resize, Rotate, and Scaling (done)
-- Cropping Images
+- Cropping Images (done)
 - Adding Texts and Shapes
 - Controlling hue, saturation, contrast and brightness
 - Add borders to images

@@ -128,21 +128,17 @@ impl Image {
     }
 
     pub fn crop(&mut self, mut top_x: i32, mut top_y: i32, mut width: u32, mut height: u32) {
-        // Ensure top_x and top_y are non-negative
         top_x = top_x.max(0);
         top_y = top_y.max(0);
 
-        // Convert top_x and top_y to u32 for easier calculations
         let top_x = top_x as u32;
         let top_y = top_y as u32;
 
-        // Adjust width and height if they exceed image boundaries
         width = width.min(self.width_bk.saturating_sub(top_x));
         height = height.min(self.height_bk.saturating_sub(top_y));
 
-        // Ensure we have a valid crop area
         if width == 0 || height == 0 {
-            return; // No valid crop area, exit the function
+            return;
         }
 
         let mut new_pixels = vec![0_u8; (width * height * 4) as usize];
@@ -154,7 +150,6 @@ impl Image {
                 let old_idx = ((old_y * self.width_bk + old_x) * 4) as usize;
                 let new_idx = ((row * width + col) * 4) as usize;
 
-                // Copy each component (R, G, B, A) of the pixel
                 new_pixels[new_idx..new_idx + 4]
                     .copy_from_slice(&self.pixels[old_idx..old_idx + 4]);
             }
