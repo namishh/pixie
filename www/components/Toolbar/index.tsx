@@ -1,4 +1,4 @@
-import { RotateCcw, CropIcon, Scaling, ArrowDownRight } from "lucide-react";
+import { RotateCcw, CropIcon, Scan, Scaling } from "lucide-react";
 
 import { useEditorStore, useImageStore } from "@/store/store";
 import { get_wasm_memory } from "../../../pkg/foto";
@@ -13,8 +13,8 @@ export const Toolbar = ({
 }: {
   ResizeCanvas: (autofit: Boolean) => void;
 }) => {
-  const { zoomRatio } = useEditorStore();
-  const { imgBuff, getWasmImg, setImgBuff } = useImageStore();
+  const { zoomRatio, setCanvasBorder, showCanvasBorder } = useEditorStore();
+  const { getWasmImg, setImgBuff } = useImageStore();
   const [openRotate, setOpenRotate] = useState(false);
   const [openScale, setOpenScale] = useState(false);
 
@@ -51,6 +51,15 @@ export const Toolbar = ({
     <>
       <div className="fixed top-4 left-4 flex flex-col gap-4">
         <div className="flex flex-col gap-4 p-3 bg-neutral-900 rounded-md border-[1px] border-neutral-700">
+          <Scan
+            onClick={() => {
+              setCanvasBorder(!showCanvasBorder);
+            }}
+            className="cursor-pointer"
+            size={20}
+          />
+        </div>
+        <div className="flex flex-col gap-4 p-3 bg-neutral-900 rounded-md border-[1px] border-neutral-700">
           <RotateCcw
             onClick={() => setOpenRotate(!openRotate)}
             className="cursor-pointer"
@@ -65,8 +74,8 @@ export const Toolbar = ({
         </div>
       </div>
       <div className="top-4 left-20 fixed">
-        {openRotate && <Rotate Redraw={Redraw} />}
-        {openScale && <Scale Redraw={Redraw} />}
+        {openRotate && <Rotate MenuOpen={setOpenRotate} Redraw={Redraw} />}
+        {openScale && <Scale MenuOpen={setOpenScale} Redraw={Redraw} />}
       </div>
     </>
   );

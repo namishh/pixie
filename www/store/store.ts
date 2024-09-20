@@ -8,7 +8,9 @@ export interface StoreState {
   width: number;
   height: number;
   factor: number;
+  showCanvasBorder: boolean;
 
+  setCanvasBorder: (showCanvasBorder: boolean) => void;
   setFactor: (factor: number) => void;
   setZoomRatio: (zoomRatio: number) => void;
   setImageSrc: (src: string) => void;
@@ -22,12 +24,18 @@ export const useEditorStore = create<StoreState>()(
     zoomRatio: 1,
     width: 0,
     height: 0,
+    showCanvasBorder: false,
     factor: 100,
+    imageUrl: "/logo.jpg",
 
-    imageUrl: "/sample.jpg",
     setZoomRatio: (zoomRatio) =>
       set((state) => {
         state.zoomRatio = zoomRatio;
+      }),
+
+    setCanvasBorder: (showCanvasBorder) =>
+      set((state) => {
+        state.showCanvasBorder = showCanvasBorder;
       }),
 
     setFactor: (factor) =>

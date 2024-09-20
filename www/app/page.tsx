@@ -55,11 +55,6 @@ export default function Home() {
       }
       ctx.scale(zoom, zoom);
     }
-
-    let left = Math.round(Math.max(0, containerWidth - newWidth) / 2);
-    let top = Math.round(Math.max(0, containerHeight - newHeight) / 2);
-    canvas.style.left = left + "px";
-    canvas.style.top = top + "px";
   }
 
   function DrawImage(img: HTMLImageElement) {
@@ -91,7 +86,7 @@ export default function Home() {
     let imgData = tmpCtx.getImageData(0, 0, w, h);
 
     wasmimage.reuse(w, h, imgData.data as unknown as Uint8Array);
-    
+
     wasmimage.set(w, h, imgData.data as unknown as Uint8Array);
     ResizeCanvas(true);
   }

@@ -7,42 +7,40 @@ import {
 
 import { useImageStore } from "@/store/store";
 import { Slider } from "../ui/slider";
+import { Dispatch, SetStateAction } from "react";
+
+import { Button } from "../ui/button";
 
 export const Rotate = ({
+  MenuOpen,
   Redraw,
 }: {
+  MenuOpen: Dispatch<SetStateAction<boolean>>;
   Redraw: (reposition: Boolean) => void;
 }) => {
   const { getWasmImg, rotationAngle, setRotationAngle } = useImageStore();
-  
+
   const image = getWasmImg();
-  
+
   const rotatecw = () => {
     image.perpendicular_rotate(true);
-    if (rotationAngle === 90) {
-      setRotationAngle(180);
-    } else if (rotationAngle === 180) {
-      setRotationAngle(270);
-    } else if (rotationAngle === 270) {
-      setRotationAngle(0);
+    if (rotationAngle + 90 > 360) {
+      const remaining = rotationAngle + 90 - 360;
+      setRotationAngle(remaining);
     } else {
-      setRotationAngle(90);
+      setRotationAngle(rotationAngle + 90);
     }
     image.apply_change();
     Redraw(true);
   };
-  
-  
+
   const rotateccw = () => {
     image.perpendicular_rotate(false);
-    if (rotationAngle === 90) {
-      setRotationAngle(0);
-    } else if (rotationAngle === 180) {
-      setRotationAngle(90);
-    } else if (rotationAngle === 270) {
-      setRotationAngle(180);
+    if (rotationAngle - 90 < 0) {
+      const remaining = 360 - (90 - rotationAngle);
+      setRotationAngle(remaining);
     } else {
-      setRotationAngle(270);
+      setRotationAngle(rotationAngle - 90);
     }
     image.apply_change();
     Redraw(true);
@@ -67,7 +65,7 @@ export const Rotate = ({
         <FlipVertical onClick={flipv} className="cursor-pointer" size={18} />
       </div>
 
-      <p className="text-sm">Angle</p>
+      <p className="text-sm mt-2">Angle</p>
       <Slider
         onValueCommit={() => {
           image.apply_change();
@@ -78,7 +76,7 @@ export const Rotate = ({
           Redraw(false);
         }}
         min={0}
-        className="w-full"
+        className="w-full mb-2"
         defaultValue={[rotationAngle]}
         value={[rotationAngle]}
         max={360}

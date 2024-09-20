@@ -1,11 +1,14 @@
 import { useImageStore, useEditorStore } from "@/store/store";
 import { Slider } from "../ui/slider";
 import { Button } from "../ui/button";
+import { Dispatch, SetStateAction } from "react";
 
 export const Scale = ({
   Redraw,
+  MenuOpen,
 }: {
   Redraw: (reposition: Boolean) => void;
+  MenuOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
   const { getWasmImg } = useImageStore();
   const { factor, setFactor } = useEditorStore();
@@ -53,6 +56,7 @@ export const Scale = ({
           const image = getWasmImg();
           image.apply_change();
           image.update_orig();
+          MenuOpen(false);
           setFactor(100);
         }}
         className="mt-2"
