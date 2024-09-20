@@ -8,9 +8,13 @@ export interface StoreState {
   width: number;
   height: number;
   factor: number;
+  canvas: HTMLCanvasElement | null;
+  showCroppingHandlers: boolean;
   showCanvasBorder: boolean;
 
   setCanvasBorder: (showCanvasBorder: boolean) => void;
+  setShowCroppingHandlers: (s: boolean) => void;
+  setCanvas: (canvas: HTMLCanvasElement) => void;
   setFactor: (factor: number) => void;
   setZoomRatio: (zoomRatio: number) => void;
   setImageSrc: (src: string) => void;
@@ -27,6 +31,13 @@ export const useEditorStore = create<StoreState>()(
     showCanvasBorder: false,
     factor: 100,
     imageUrl: "/logo.jpg",
+    canvas: null,
+    showCroppingHandlers: false,
+
+    setCanvas: (canvas) =>
+      set(produce((state) => {
+        state.canvas = canvas;
+      })),
 
     setZoomRatio: (zoomRatio) =>
       set((state) => {
@@ -36,6 +47,11 @@ export const useEditorStore = create<StoreState>()(
     setCanvasBorder: (showCanvasBorder) =>
       set((state) => {
         state.showCanvasBorder = showCanvasBorder;
+      }),
+
+    setShowCroppingHandlers: (s) =>
+      set((state) => {
+        state.showCroppingHandlers = s;
       }),
 
     setFactor: (factor) =>

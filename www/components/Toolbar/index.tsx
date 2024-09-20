@@ -13,7 +13,14 @@ export const Toolbar = ({
 }: {
   ResizeCanvas: (autofit: Boolean) => void;
 }) => {
-  const { zoomRatio, setCanvasBorder, showCanvasBorder } = useEditorStore();
+  const {
+    zoomRatio,
+    setCanvasBorder,
+    showCanvasBorder,
+    setWidthHeight,
+    showCroppingHandlers,
+    setShowCroppingHandlers,
+  } = useEditorStore();
   const { getWasmImg, setImgBuff } = useImageStore();
   const [openRotate, setOpenRotate] = useState(false);
   const [openScale, setOpenScale] = useState(false);
@@ -43,6 +50,7 @@ export const Toolbar = ({
         if (reposition) {
           ResizeCanvas(true);
         }
+        setWidthHeight(canvas.width, canvas.height);
       },
     );
   };
@@ -65,7 +73,11 @@ export const Toolbar = ({
             className="cursor-pointer"
             size={20}
           />
-          <CropIcon className="cursor-pointer" size={20} />
+          <CropIcon
+            onClick={() => setShowCroppingHandlers(!showCroppingHandlers)}
+            className="cursor-pointer"
+            size={20}
+          />
           <Scaling
             onClick={() => setOpenScale(!openScale)}
             className="cursor-pointer"

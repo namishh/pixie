@@ -7,7 +7,7 @@ import { SaveOpen } from "@/components/SaveOpen";
 import Toolbar from "@/components/Toolbar";
 
 export default function Home() {
-  const { setImageSrc, zoomRatio, setZoomRatio, imageUrl } = useEditorStore();
+  const { setImageSrc, zoomRatio, setZoomRatio, imageUrl, setWidthHeight } = useEditorStore();
   const imageObject = useImageStore();
 
   function ResizeCanvas(autofit: Boolean) {
@@ -44,6 +44,8 @@ export default function Home() {
 
     let newWidth = Math.round(width * zoom);
     let newHeight = Math.round(height * zoom);
+    
+    setWidthHeight(newWidth, newHeight)
 
     if (canvas.width !== newWidth || canvas.height !== newHeight) {
       console.log("Resizing canvas: ", newWidth, newHeight);

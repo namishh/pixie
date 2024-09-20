@@ -10,7 +10,8 @@ export const Canvas = ({
   LoadImage: (img: string | File | null) => void;
   ResizeCanvas: (autofit: boolean) => void;
 }) => {
-  const { zoomRatio, showCanvasBorder } = useEditorStore();
+  const { zoomRatio, showCanvasBorder, showCroppingHandlers, setCanvas } =
+    useEditorStore();
   const { imgBuff } = useImageStore();
 
   useEffect(() => {
@@ -24,20 +25,28 @@ export const Canvas = ({
   }, [zoomRatio]);
 
   useEffect(() => {
+    const canvas = document.getElementById("canvas") as HTMLCanvasElement; 
+    setCanvas(canvas)
     LoadImage(null);
   }, []);
 
   return (
     <div
       id="canvas-container"
-      style={{ width: "100%", height: "100%", position: "relative", display: "flex", justifyContent: "center", alignItems: "center" }}
+      style={{
+        width: "100%",
+        height: "100%",
+        position: "relative",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
     >
       <canvas
         id="canvas"
         className={`${showCanvasBorder && "outline-4 outline outline-neutral-500"}`}
       ></canvas>
-      
-      <CropHandlers />
+      {showCroppingHandlers && <CropHandlers ResizeCanvas={ResizeCanvas} />}
     </div>
   );
 };
