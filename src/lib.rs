@@ -1,5 +1,4 @@
 pub mod image;
-mod utils;
 
 use wasm_bindgen::prelude::*;
 

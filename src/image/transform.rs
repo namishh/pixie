@@ -1,10 +1,7 @@
 extern crate wasm_bindgen;
-use crate::greet;
-use crate::log;
 
 use super::Action;
 use super::Image;
-use std::cmp;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]

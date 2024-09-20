@@ -29,8 +29,6 @@ pub struct Image {
     height_bk: u32,
 
     last_action: Action,
-    hsi: Vec<Vec<f64>>,
-    lab: Vec<f64>,
 
     pixels_orig: Vec<u8>,
     width_orig: u32,
@@ -54,9 +52,6 @@ impl Image {
             height_orig: h,
 
             last_action: Action::None,
-
-            hsi: vec![vec![], vec![], vec![]],
-            lab: vec![0_f64; 0],
         }
     }
 
