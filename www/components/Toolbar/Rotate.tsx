@@ -7,9 +7,9 @@ import {
 
 import { useImageStore } from "@/store/store";
 import { Slider } from "../ui/slider";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
-import { Button } from "../ui/button";
+import { Switch } from "../ui/switch";
 
 export const Rotate = ({
   MenuOpen,
@@ -19,7 +19,7 @@ export const Rotate = ({
   Redraw: (reposition: Boolean) => void;
 }) => {
   const { getWasmImg, rotationAngle, setRotationAngle } = useImageStore();
-
+  const [preview, setPreview] = useState(false);
   const image = getWasmImg();
 
   const rotatecw = () => {
@@ -56,7 +56,7 @@ export const Rotate = ({
     Redraw(true);
   };
   return (
-    <div className="flex w-36 absolute top-0 left-0 flex-col gap-2 p-3 bg-neutral-900 rounded-md border-[1px] border-neutral-700">
+    <div className="flex w-48 absolute top-16 left-0 flex-col gap-2 p-3 bg-neutral-900 rounded-md border-[1px] border-neutral-700">
       <p className="text-sm">Rotate</p>
       <div className="flex gap-4">
         <RotateCw onClick={rotatecw} className="cursor-pointer" size={18} />
@@ -67,13 +67,19 @@ export const Rotate = ({
 
       <p className="text-sm mt-2">Angle</p>
       <Slider
-        onValueCommit={() => {
+        onValueCommit={(i) => {
+          if (!preview) {
+            image.degrees_rotate(i[0]);
+            Redraw(false);
+          }
           image.apply_change();
         }}
         onValueChange={(i) => {
+          if (preview) {
+            image.degrees_rotate(i[0]);
+            Redraw(false);
+          }
           setRotationAngle(i[0]);
-          image.degrees_rotate(i[0]);
-          Redraw(false);
         }}
         min={0}
         className="w-full mb-2"
@@ -82,6 +88,16 @@ export const Rotate = ({
         max={360}
         step={1}
       />
+
+      <div className="flex gap-3 items-center">
+        <Switch
+          checked={preview}
+          onCheckedChange={() => {
+            setPreview(!preview);
+          }}
+        />
+        <p className="text-neutral-400 text-xs">Preview Rotation</p>
+      </div>
     </div>
   );
 };

@@ -15,7 +15,7 @@ export const Scale = ({
 
   const image = getWasmImg();
   return (
-    <div className="flex top-0 left-0 absolute flex-col gap-2 p-3 bg-neutral-900 rounded-md border-[1px] border-neutral-700">
+    <div className="flex top-32 left-0 absolute flex-col gap-2 p-3 bg-neutral-900 rounded-md border-[1px] border-neutral-700">
       <p className="text-sm">Scale</p>
       <Slider
         onValueChange={(i) => {
