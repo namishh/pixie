@@ -12,8 +12,11 @@ export interface FilterStore {
     hue: number;
     luminosity: number;
     contrast: number;
-    invert: number
+    invert: number;
     sharpness: number;
+    cartoonify: number;
+    pixelate: number;
+    blur: number;
   };
   setFilter: (filterName: string, value: number) => void;
   resetFilters: () => void;
@@ -26,11 +29,14 @@ export const useFilterStore = create<FilterStore>()(
       sepia: 0,
       saturation: 0,
       invert: 0,
-      brightness: 0,
-      hue: 0,
-      luminosity: 0,
-      contrast: 0,
-      sharpness: 0,
+      brightness: 1,
+      hue: 1,
+      luminosity: 1,
+      contrast: 1,
+      sharpness: 1,
+      cartoonify: 0,
+      pixelate: 0,
+      blur: 0,
     },
     setFilter: (filterName, value) =>
       set(

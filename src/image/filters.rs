@@ -181,6 +181,129 @@ impl Image {
         self.last_action = Action::Adjust;
     }
 
+    fn blur(&self, pixels: &mut [u8], factor: f64) {
+        let width = self.width as usize;
+        let height = self.height as usize;
+        let mut blurred = pixels.to_vec();
+        let kernel_size = (factor * 10.0).round() as usize;
+        let kernel_half = kernel_size / 2;
+
+        for y in 0..height {
+            for x in 0..width {
+                let mut r_sum = 0u32;
+                let mut g_sum = 0u32;
+                let mut b_sum = 0u32;
+                let mut count = 0u32;
+
+                let start_y = y.saturating_sub(kernel_half);
+                let end_y = (y + kernel_half + 1).min(height);
+                let start_x = x.saturating_sub(kernel_half);
+                let end_x = (x + kernel_half + 1).min(width);
+
+                for ky in start_y..end_y {
+                    for kx in start_x..end_x {
+                        let idx = (ky * width + kx) * 4;
+                        r_sum += pixels[idx] as u32;
+                        g_sum += pixels[idx + 1] as u32;
+                        b_sum += pixels[idx + 2] as u32;
+                        count += 1;
+                    }
+                }
+
+                let idx = (y * width + x) * 4;
+                blurred[idx] = (r_sum / count) as u8;
+                blurred[idx + 1] = (g_sum / count) as u8;
+                blurred[idx + 2] = (b_sum / count) as u8;
+            }
+        }
+
+        pixels.copy_from_slice(&blurred);
+    }
+    
+    fn cartoonify(&self, pixels: &mut [u8], factor: f64) {
+        let width = self.width as usize;
+        let height = self.height as usize;
+        let mut cartoon = pixels.to_vec();
+
+        // Edge detection (simple Sobel filter)
+        let mut edges = vec![0u8; width * height];
+        for y in 1..height - 1 {
+            for x in 1..width - 1 {
+                let mut gx = 0i32;
+                let mut gy = 0i32;
+                for c in 0..3 {
+                    let idx = (y * width + x) * 4 + c;
+                    gx += pixels[idx - 4] as i32 - pixels[idx + 4] as i32;
+                    gy += pixels[(y - 1) * width * 4 + x * 4 + c] as i32
+                        - pixels[(y + 1) * width * 4 + x * 4 + c] as i32;
+                }
+                let mag = ((gx * gx + gy * gy) as f64).sqrt() as u8;
+                edges[y * width + x] = if mag > 128 { 255 } else { 0 };
+            }
+        }
+
+        // Color quantization and edge overlay
+        let levels = (factor * 5.0).round() as u8 + 2;
+        let step = 255 / levels;
+        for y in 0..height {
+            for x in 0..width {
+                let idx = (y * width + x) * 4;
+                for c in 0..3 {
+                    cartoon[idx + c] =
+                        ((pixels[idx + c] as f64 / step as f64).round() * step as f64) as u8;
+                }
+                if edges[y * width + x] == 255 {
+                    cartoon[idx] = 0;
+                    cartoon[idx + 1] = 0;
+                    cartoon[idx + 2] = 0;
+                }
+            }
+        }
+
+        pixels.copy_from_slice(&cartoon);
+    }
+
+    fn pixelate(&self, pixels: &mut [u8], factor: f64) {
+        let width = self.width as usize;
+        let height = self.height as usize;
+        let block_size = (factor * 20.0).round() as usize + 1;
+
+        for by in (0..height).step_by(block_size) {
+            for bx in (0..width).step_by(block_size) {
+                let mut r_sum = 0u32;
+                let mut g_sum = 0u32;
+                let mut b_sum = 0u32;
+                let mut count = 0u32;
+
+                let end_y = (by + block_size).min(height);
+                let end_x = (bx + block_size).min(width);
+
+                for y in by..end_y {
+                    for x in bx..end_x {
+                        let idx = (y * width + x) * 4;
+                        r_sum += pixels[idx] as u32;
+                        g_sum += pixels[idx + 1] as u32;
+                        b_sum += pixels[idx + 2] as u32;
+                        count += 1;
+                    }
+                }
+
+                let r_avg = (r_sum / count) as u8;
+                let g_avg = (g_sum / count) as u8;
+                let b_avg = (b_sum / count) as u8;
+
+                for y in by..end_y {
+                    for x in bx..end_x {
+                        let idx = (y * width + x) * 4;
+                        pixels[idx] = r_avg;
+                        pixels[idx + 1] = g_avg;
+                        pixels[idx + 2] = b_avg;
+                    }
+                }
+            }
+        }
+    }
+
     pub fn apply_filters(&mut self, filter_data: &str) {
         let filters: Vec<(String, f64)> = serde_json::from_str(filter_data).unwrap();
         let mut temp_pixels = self.pixels_orig.clone();
@@ -196,6 +319,9 @@ impl Image {
                 "saturation" => self.saturation(&mut temp_pixels, factor),
                 "brightness" => self.brightness(&mut temp_pixels, factor),
                 "invert" => self.invert(&mut temp_pixels),
+                "blur" => self.blur(&mut temp_pixels, factor),
+                "cartoonify" => self.cartoonify(&mut temp_pixels, factor),
+                "pixelate" => self.pixelate(&mut temp_pixels, factor),
                 // Add more filters here...
                 _ => {}
             }
