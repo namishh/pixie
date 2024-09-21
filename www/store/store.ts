@@ -3,6 +3,52 @@ import { immer } from "zustand/middleware/immer";
 import { Image } from "../../pkg/foto";
 import { produce } from "immer";
 
+export interface FilterStore {
+  filters: {
+    grayscale: number;
+    sepia: number;
+    saturation: number;
+    brightness: number;
+    hue: number;
+    luminosity: number;
+    contrast: number;
+    invert: number
+    sharpness: number;
+  };
+  setFilter: (filterName: string, value: number) => void;
+  resetFilters: () => void;
+}
+
+export const useFilterStore = create<FilterStore>()(
+  immer((set) => ({
+    filters: {
+      grayscale: 0,
+      sepia: 0,
+      saturation: 0,
+      invert: 0,
+      brightness: 0,
+      hue: 0,
+      luminosity: 0,
+      contrast: 0,
+      sharpness: 0,
+    },
+    setFilter: (filterName, value) =>
+      set(
+        produce((state) => {
+          state.filters[filterName] = value;
+        }),
+      ),
+    resetFilters: () =>
+      set(
+        produce((state) => {
+          for (const key in state.filters) {
+            state.filters[key] = 0;
+          }
+        }),
+      ),
+  })),
+);
+
 export interface StoreState {
   zoomRatio: number;
   width: number;
@@ -35,9 +81,11 @@ export const useEditorStore = create<StoreState>()(
     showCroppingHandlers: false,
 
     setCanvas: (canvas) =>
-      set(produce((state) => {
-        state.canvas = canvas;
-      })),
+      set(
+        produce((state) => {
+          state.canvas = canvas;
+        }),
+      ),
 
     setZoomRatio: (zoomRatio) =>
       set((state) => {

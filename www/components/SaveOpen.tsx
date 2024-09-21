@@ -1,4 +1,4 @@
-import { useEditorStore, useImageStore } from "@/store/store";
+import { useEditorStore, useImageStore, useFilterStore } from "@/store/store";
 import { SaveIcon, FolderOpen, Redo } from "lucide-react";
 import { get_wasm_memory } from "../../pkg/foto";
 
@@ -7,13 +7,14 @@ export const SaveOpen = ({
 }: {
   LoadImage: (img: string | File | null) => void;
 }) => {
-  const { setZoomRatio, zoomRatio } = useEditorStore();
+  const { resetFilters } = useFilterStore();
   const imageObject = useImageStore();
   const onFileChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     if (evt.target.files && evt.target.files.length > 0) {
       let file = evt.target.files[0];
       LoadImage(file);
       imageObject.setRotationAngle(0);
+      resetFilters();
     }
   };
 
@@ -61,6 +62,7 @@ export const SaveOpen = ({
         <Redo
           onClick={() => {
             imageObject.setRotationAngle(0);
+            resetFilters();
             LoadImage(null);
           }}
           size={20}

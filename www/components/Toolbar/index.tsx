@@ -1,10 +1,11 @@
-import { RotateCcw, CropIcon, Scan, Scaling } from "lucide-react";
+import { RotateCcw, CropIcon, Scan, Scaling, Blend } from "lucide-react";
 
 import { useEditorStore, useImageStore } from "@/store/store";
 import { get_wasm_memory } from "../../../pkg/foto";
 
 import { Rotate } from "./Rotate";
 import { Scale } from "./Scale";
+import { Filter } from "./Filter";
 
 import { useState } from "react";
 
@@ -24,6 +25,7 @@ export const Toolbar = ({
   const { getWasmImg, setImgBuff } = useImageStore();
   const [openRotate, setOpenRotate] = useState(false);
   const [openScale, setOpenScale] = useState(false);
+  const [openFilter, setOpenFilter] = useState(false);
 
   const Redraw = (reposition: Boolean) => {
     let wasmimage = getWasmImg();
@@ -84,10 +86,18 @@ export const Toolbar = ({
             size={22}
           />
         </div>
+        <div className="flex flex-col gap-4 p-3 bg-neutral-900 rounded-md border-[1px] border-neutral-700">
+          <Blend
+            onClick={() => setOpenFilter(!openFilter)}
+            className="cursor-pointer"
+            size={20}
+          />
+        </div>
       </div>
       <div className="top-4 left-20 fixed">
         {openRotate && <Rotate MenuOpen={setOpenRotate} Redraw={Redraw} />}
         {openScale && <Scale MenuOpen={setOpenScale} Redraw={Redraw} />}
+        {openFilter && <Filter MenuOpen={setOpenFilter} Redraw={Redraw} />}
       </div>
     </>
   );

@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://i.imgur.com/uwF0N0q.png">
+<img src="https://i.imgur.com/1LCCTaC.png">
 
 <samp>
 // pixie: wasm image manipulator tool
@@ -31,11 +31,10 @@ All of the photo manipulation is done **without any external libraries** in rust
 - Loading and saving images (done)
 - Resize, Rotate, and Scaling (done)
 - Cropping Images (done)
-- Adding Texts and Shapes
-- Controlling hue, saturation, contrast and brightness
+- Controlling hue, saturation, contrast and brightness (done)
 - Add borders to images
-- Filters like blur, sharpen, pixelate
-- Grayscale, Sepia, Invert, etc
+- Effects like blur, sharpen, pixelate
+- Filters Grayscale, Sepia, Invert (done)
 
 // Screenshots .. (todo)
 </samp>
